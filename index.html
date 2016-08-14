@@ -1,0 +1,123 @@
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desktop Emulation</title>
+<link rel="stylesheet" href="css/w3.css">
+<!-- <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css"> -->
+<link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+<link href="https://fonts.googleapis.com/css?family=Arvo" rel="stylesheet">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+<style>
+body { font-family: 'Inconsolata', monospace; background-color: #5C6A79; }
+.circle { border: 3px solid; border-radius: 50%; width: 10px; height: 10px; margin-right: 3px; text-align:left; }
+.arvo { font-family: 'Arvo', serif;}
+#navbar { width: 100%; height: 5%;}
+#desktop{ width: 100%; height: 90%;}
+#terminal_window { width: 500px; height: 450px;}
+#terminal_window_bar {width: 100%; height: 4%;}
+#terminal_form { overflow-y: auto; width: 100%; height: 97%; }
+#history { list-style: none; padding: 0; margin: 0; }
+#console { background-color: inherit; color: inherit; background: transparent; border: none; outline: none; }
+#dock {
+    width: 20%;
+    height: 6%;
+    left: 40%;
+    margin-bottom: 10px;
+}
+#terminal_img {width: 50px; height: 50px;}
+</style>
+<body>
+    <!-- Navbar  -->
+    <div id="navbar">
+      <ul class="w3-navbar w3-large w3-blue-grey w3-left-align arvo">
+          <li class="w3-hide-medium w3-hide-large w3-w3-grey w3-opennav w3-right">
+              <a href="javascript:void(0);" onclick="hamburgerMenu()">☰</a>
+          </li>
+          <li><a>Desktop Emulation</a></li>
+          <!-- <li class="w3-hide-small w3-right"><a href="http://larkenx.net/">Home</a></li> -->
+      </ul>
+
+      <div id="hamburgerMenu" class=" w3-hide-large w3-hide-medium">
+          <ul class="w3-navbar w3-left-align w3-large w3-grey">
+              <!-- <li><a href="http://larkenx.net/">Home</a></li> -->
+          </ul>
+      </div>
+    </div>
+    <!-- 'Desktop' Space  -->
+    <div id="desktop">
+
+    <!-- Dock -->
+      <div id="dock" class="w3-bottom w3-blue-grey w3-card-4 w3-round">
+          <img id="terminal_img" class="w3-round" onclick="launch('terminal')" src="images/favicon.ico"/>
+      </div>
+      <!-- End Desktop -->
+    </div>
+</body>
+<script src="scripts/jquery.js"></script>
+<script src="scripts/jquery-ui.js"></script>
+<script src="scripts/canvas.js"></script>
+<script src="scripts/app.js"></script>
+<script src="scripts/cmds.js"></script>
+<script>
+"use strict";
+// Commands
+function hamburgerMenu() { var x = document.getElementById("hamburgerMenu"); if (x.className.indexOf("w3-show") == -1) { x.className += " w3-show"; } else { x.className = x.className.replace(" w3-show", ""); } }
+
+function launch(app) {
+    var launchApp = apps[app];
+    if (launchApp) {
+        $('#desktop').append(launchApp);
+        console.log(app + " launched successfully.");
+    } else {
+        var launchApp = apps[app]();
+        $('#desktop').append(launchApp);
+        console.log(app + " launched successfully. Function processed!");
+    }
+}
+
+$('#terminal_form').submit(function() {
+    // Variables
+    var cmd = $('#console').val();
+    var bash_profile = $('#bash_profile').html();
+    var cmdLine = bash_profile + '&nbsp;' + cmd + '<br>';
+    // Append content to console history
+    $('#history').append('<li>', cmdLine, cmds[cmd], '</li>');
+
+    // Clear the console for new commands & scroll to the bottom
+    $('#console').val('');
+    var scrollElement = document.getElementById('terminal_form');
+    scrollElement.scrollTop = scrollElement.scrollHeight;
+    return false;
+});
+
+canvas.addEventListener('click', function(e) {
+  var mousePos = getMousePos(canvas, e);
+  var buttonHeight = canvas.height / 2;
+  var redButton = { x: 20, y: buttonHeight };
+  var yellowButton = { x: 40, y: buttonHeight };
+  var greenButton = { x: 60, y: buttonHeight };
+  if (getDistance(mousePos, redButton) <= buttonRadius) {
+    // Red Button Logic
+    $('#history').append('<li>Red Button!</li>');
+
+  } else if (getDistance(mousePos, yellowButton) <= buttonRadius) {
+    // Yellow Button Logic
+    $('#history').append('<li>Yellow Button!</li>');
+
+  } else if (getDistance(mousePos, greenButton) <= buttonRadius) {
+    // Green Button Logic
+    $('#history').append('<li>Green Button!</li>');
+  }
+});
+
+$(function() {
+    $('#terminal_window').draggable()
+                         .draggable("option", "containment", "#desktop")
+                         .draggable("option", "cancel", "#terminal_form");
+    $('#terminal_window').resizable({
+        minWidth: 400,
+        minHeight: 430
+    });
+});
+</script>
+</html>
