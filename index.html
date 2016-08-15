@@ -24,7 +24,7 @@ body { font-family: 'Inconsolata', monospace; background-color: #5C6A79; }
     left: 40%;
     margin-bottom: 10px;
 }
-#terminal_img {width: 50px; height: 50px;}
+#terminal_img {width: 40px; height: 40px;}
 </style>
 <body>
     <!-- Navbar  -->
@@ -46,6 +46,17 @@ body { font-family: 'Inconsolata', monospace; background-color: #5C6A79; }
     <!-- 'Desktop' Space  -->
     <div id="desktop">
 
+      <div id="terminal_window">
+        <div id="terminal_window_bar" class="w3-grey"><canvas id="terminal_canvas" width="400" height="15"></canvas></div>
+        <form action="" id="terminal_form" class="w3-container w3-card-12 w3-dark-grey">
+            <ul id="history"></ul>
+            <div style="white-space:nowrap">
+                <label id="bash_profile" for="console">[guest@larkenx.net ~] $ </label>
+                <input id="console" class="w3-rest" autofocus autocomplete="off" type="text"></input>
+            </div>
+        </form>
+      </div>
+
     <!-- Dock -->
       <div id="dock" class="w3-bottom w3-blue-grey w3-card-4 w3-round">
           <img id="terminal_img" class="w3-round" onclick="launch('terminal')" src="images/favicon.ico"/>
@@ -64,25 +75,19 @@ body { font-family: 'Inconsolata', monospace; background-color: #5C6A79; }
 function hamburgerMenu() { var x = document.getElementById("hamburgerMenu"); if (x.className.indexOf("w3-show") == -1) { x.className += " w3-show"; } else { x.className = x.className.replace(" w3-show", ""); } }
 
 function launch(app) {
-    var launchApp = apps[app];
-    if (launchApp) {
-        $('#desktop').append(launchApp);
-        console.log(app + " launched successfully.");
-    } else {
-        var launchApp = apps[app]();
-        $('#desktop').append(launchApp);
-        console.log(app + " launched successfully. Function processed!");
-    }
+  apps[app]();
 }
 
-$('#terminal_form').submit(function() {
+makeWindow('terminal');
+
+
+$('terminal_form').submit(function() {
     // Variables
     var cmd = $('#console').val();
     var bash_profile = $('#bash_profile').html();
     var cmdLine = bash_profile + '&nbsp;' + cmd + '<br>';
     // Append content to console history
     $('#history').append('<li>', cmdLine, cmds[cmd], '</li>');
-
     // Clear the console for new commands & scroll to the bottom
     $('#console').val('');
     var scrollElement = document.getElementById('terminal_form');
@@ -90,34 +95,6 @@ $('#terminal_form').submit(function() {
     return false;
 });
 
-canvas.addEventListener('click', function(e) {
-  var mousePos = getMousePos(canvas, e);
-  var buttonHeight = canvas.height / 2;
-  var redButton = { x: 20, y: buttonHeight };
-  var yellowButton = { x: 40, y: buttonHeight };
-  var greenButton = { x: 60, y: buttonHeight };
-  if (getDistance(mousePos, redButton) <= buttonRadius) {
-    // Red Button Logic
-    $('#history').append('<li>Red Button!</li>');
 
-  } else if (getDistance(mousePos, yellowButton) <= buttonRadius) {
-    // Yellow Button Logic
-    $('#history').append('<li>Yellow Button!</li>');
-
-  } else if (getDistance(mousePos, greenButton) <= buttonRadius) {
-    // Green Button Logic
-    $('#history').append('<li>Green Button!</li>');
-  }
-});
-
-$(function() {
-    $('#terminal_window').draggable()
-                         .draggable("option", "containment", "#desktop")
-                         .draggable("option", "cancel", "#terminal_form");
-    $('#terminal_window').resizable({
-        minWidth: 400,
-        minHeight: 430
-    });
-});
 </script>
 </html>

@@ -9,8 +9,8 @@ function resizeCanvas() {
 }
 
 // Canvas for OSX-like window buttons
-function drawOSXButtons() {
-  var canvas = document.getElementById('canvas');
+function drawOSXButtons(app) {
+  var canvas = document.getElementById(app + '_canvas');
   // resizeCanvas();
   var height = canvas.height;
   var c = canvas.getContext('2d');
